@@ -24,8 +24,22 @@ def post_detail_view(request,post,year):
                              slug=post,
                              status='published',
                              publish__year=year,)
+    comments = post.comments.filter(active=True)
+    new_comment = None
+    #comment posted
+    if request.method=='POST':
+        comment_form = CommentForm(data=request.POST)
+        if comment_form.is_valid():
+    # create comment object but don't save in database yet
+            new_comment = comment_form.save(commit=False)
+            #assign the current post to the comment
+            new_comment.post = post
+            # save the comment to database
+            new_comment.save()
+    else:
+        comment_form = CommentForm()
 
-    return render(request,'blog/post_detail.html',{'post' : post})
+    return render(request,'blog/post_detail.html',{'post' : post,'comments':comments,'new_comment':new_comment,'comment_form':comment_form})
 
 
 # def post_detail_view(request,post,year,month,day):

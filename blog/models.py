@@ -34,7 +34,7 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post, related_name='comments',on_delete='None')
+    post = models.ForeignKey(Post, related_name='comments',on_delete=None)
     name = models.CharField(max_length=50)
     email = models.EmailField()
     body = models.TextField()

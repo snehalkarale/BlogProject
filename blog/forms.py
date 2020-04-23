@@ -7,7 +7,7 @@ class EmailSendForm(forms.Form):
     to = forms.EmailField()
     comments = forms.CharField(required=False, widget=forms.Textarea)
 
-class CommentForm(forms.Form):
+class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        field = ('name','email','body')
+        fields = ('name','email','body')

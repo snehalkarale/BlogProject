@@ -2,11 +2,12 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.urls import reverse
+from taggit.managers import TaggableManager
 
 # Create your models here.
-# class CustomManager(models.Manager):
-#     def get_queryset(self):
-#         return super().get_queryset().filter(status='published')
+class CustomManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(status='published')
 
 class Post(models.Model):
     STATUS_CHOICES = (('draft','Draft'),('published','Published'))
@@ -18,7 +19,9 @@ class Post(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=50,choices=STATUS_CHOICES,default='draft')
-    # objects = CustomManager()
+    objects = CustomManager()
+    tags = TaggableManager()
+    
 
     class Meta:
         ordering = ('-publish',)

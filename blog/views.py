@@ -2,14 +2,18 @@ from django.shortcuts import render, get_object_or_404
 from .models import Post
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from .forms import CommentForm
+from taggit.models import Tag
 # Create your views here.
 
 
-def post_list_view(request):
+def post_list_view(request, tag_slug=None):
     post_list = Post.objects.all()
+    tag=None
+    if tag_slug:
+        tag = get_object_or_404(Tag,slug=tag_slug)
+        post_list=post_list.filter(tags__in=[tag])
     paginator = Paginator(post_list, 2)
     page_number = request.GET.get('page')
-
     try:
         post_list = paginator.page(page_number)
     except PageNotAnInteger:
@@ -17,7 +21,7 @@ def post_list_view(request):
     except EmptyPage:
         post_list = paginator.page(paginator.num_pages)
 
-    return render(request,'blog/post_list.html',{'post_list': post_list})
+    return render(request,'blog/post_list.html',{'post_list': post_list,'tag':tag})
 
 def post_detail_view(request,post,year):
     post = get_object_or_404(Post,
